@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "45802228114",
+    "firebase_url": "https://va-sr-fed22-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "va-sr-fed22",
+    "storage_bucket": "va-sr-fed22.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45802228114:android:6db2fedd5a8fa9618a194b",
+        "android_client_info": {
+          "package_name": "com.example.server_room_new"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADehmhtKhNziPOCxqO6pjafYTK_ytgdEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

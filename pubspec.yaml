@@ -1,0 +1,66 @@
+name: server_room_new
+description: "A new Flutter project."
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  shared_preferences: ^2.2.2
+  cloud_firestore: ^4.9.2
+  firebase_core: ^2.16.0
+  firebase_database: ^10.2.6
+  firebase_auth: ^4.10.0
+  get: ^4.6.6
+  #dialogs
+  awesome_dialog: ^3.1.0
+  random_avatar: ^0.0.8
+  #charts
+  fl_chart: ^0.64.0
+  syncfusion_flutter_charts: ^23.1.44
+  responsive_sizer: ^3.2.0
+  google_fonts: ^5.1.0
+  email_validator: ^2.1.17
+  http: ^1.1.2
+  intl: ^0.18.1
+  # Notifications and vibration
+  flutter_local_notifications: 19.2.0
+  vibration: ^3.1.3
+  permission_handler: ^11.0.1
+  # Audio player
+  just_audio: ^0.9.36
+  volume_controller: ^3.3.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^2.0.3
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/
+    - assets/sounds/
+
+dependency_overrides:
+  web: ^0.3.0
