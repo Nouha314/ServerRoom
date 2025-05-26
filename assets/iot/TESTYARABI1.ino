@@ -9,8 +9,8 @@
 #define WIFI_SSID "Nounou"
 #define WIFI_PASSWORD "nouha2000"
 
-#define FIREBASE_HOST "https://serverroom-2c00f-default-rtdb.europe-west1.firebasedatabase.app/"
-#define FIREBASE_AUTH "l54R8kMReXpHgACxipay2zMnQbuXrvyZJFVqUOV1"
+#define FIREBASE_HOST "https://va-sr-fed22-default-rtdb.europe-west1.firebasedatabase.app/"
+#define FIREBASE_AUTH "AIzaSyCKWUVHCiMmnncZpdixc5yM6bU0_CGwG_g"
 //for time
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 0;

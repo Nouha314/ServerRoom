@@ -8,6 +8,7 @@ import 'package:server_room_new/my_voids.dart';
 
 import '../home_page/home_page.dart';
 import '../my_ui.dart';
+import '../../main.dart';
 
 
 
@@ -39,9 +40,10 @@ class _MyLoginState extends State<MyLogin> {
         ).then((value) async {
           //account found
 
-          await getUserInfoByEmail(_emailController.text).then((value) {
+          await getUserInfoByEmail(_emailController.text).then((value) async {
 
-
+            // Always save keep signed in preference as true
+            await setKeepSignedIn(true);
 
             if(currentUser.verified || currentUser.isAdmin){
               Get.offAll(() => HomePage());

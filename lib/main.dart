@@ -9,10 +9,22 @@ import 'package:server_room_new/home_page/home_page_ctr.dart';
 import 'package:server_room_new/models/user.dart';
 import 'package:server_room_new/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 SharedPreferences? sharedPrefs;
 
+// Call this after successful login
+Future<void> setKeepSignedIn(bool value) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('keepSignedIn', value);
+}
+
+// Call this in your main() or splash screen
+Future<bool> isSignedIn() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('keepSignedIn') ?? false;
+}
 
 void main() async {
   print('## mainRun');
@@ -24,6 +36,17 @@ void main() async {
 
   await Firebase.initializeApp();//begin firebase
 
+  // Determine start screen
+  Widget startScreen;
+  bool keepSignedIn = await isSignedIn();
+  var user = FirebaseAuth.instance.currentUser;
+  if (keepSignedIn && user != null) {
+    // Load user info from Firestore before showing HomePage
+    await getUserInfoByEmail(user.email);
+    startScreen = HomePage();
+  } else {
+    startScreen = MyLogin();
+  }
 
   runApp(
     ResponsiveSizer(
@@ -32,11 +55,10 @@ void main() async {
           navigatorKey: navigatorKey,
           title: 'Server Room',
           debugShowCheckedModeBanner: false,
-          //home: HomePage(),
-          home: MyLogin(),
+          home: startScreen,
         );
       }
-    ),
+    ),  
   );
 }
 

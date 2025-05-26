@@ -24,53 +24,68 @@ class HomePageCtr extends GetxController {
    Color chartColTem = Colors.green;
    bool shouldSnoozeTem = true;
    bool isInDangerTem = false;
-   checkDangerTemState() async {
-     if(double.parse(tem_data) <= 24 ){
-       chartColTem = Colors.green;
-       isInDangerTem = false;
-       shouldSnoozeTem = true; // Reset snooze when value returns to normal
-     } else {
-       // Temperature exceeds threshold
-       if(double.parse(tem_data) > 27){
-         chartColTem = Colors.red;
-       } else {
-         chartColTem = Colors.orange;
-       }
-       
-       isInDangerTem = true;
-       
-       if(shouldSnoozeTem && isTemperatureActive){
-         shouldSnoozeTem = false;
-         
-         // Play sound at maximum volume
-         playAlarmAtMaxVolume();
-         
-         // Send notification
-         _notificationService.showNotification(
-           title: 'Temperature Alert',
-           message: 'Temperature value is out of range: $tem_data°C',
-         );
-         
-         // Show dialog
-         AwesomeDialog(
-           context: Get.context!,
-           dialogType: DialogType.error,
-           animType: AnimType.scale,
-           dismissOnTouchOutside: false,
-           dismissOnBackKeyPress: false,
-           title: 'Temperature Alert',
-           desc: 'Temperature value is out of range: $tem_data°C',
-           btnCancelText: 'STOP ALARM',
-           btnCancelColor: Colors.red,
-           btnCancelOnPress: () {
-             stopAllAlarms();
-           },
-           headerAnimationLoop: true,
-         ).show();
-       }
-     }
-   }
+   static bool isDialogShowing = false;
+checkDangerTemState() async {
+  if (double.parse(tem_data) <= 24) {
+    chartColTem = Colors.green;
+    isInDangerTem = false;
+    shouldSnoozeTem = true;
+    isDialogShowing = false;
+  } else {
+    if (double.parse(tem_data) > 27) {
+      chartColTem = Colors.red;
+    } else {
+      chartColTem = Colors.orange;
+    }
+    isInDangerTem = true;
 
+    if (shouldSnoozeTem && isTemperatureActive && !isDialogShowing) {
+      shouldSnoozeTem = false;
+
+      // Play vibration only (no sound)
+      startVibration();
+
+      // Send notification
+      _notificationService.showNotification(
+        title: 'Temperature Alert',
+        message: 'Temperature value is out of range: $tem_data°C',
+      );
+
+      // Show dialog safely
+if (Get.context != null && Get.context!.mounted) {
+        try {
+          // Only now set flag to prevent duplicate dialogs
+          isDialogShowing = true;
+
+          AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.error,
+            animType: AnimType.scale,
+            dismissOnTouchOutside: false,
+            dismissOnBackKeyPress: false,
+            title: 'Temperature Alert',
+            desc: 'Temperature value is out of range: $tem_data°C',
+            btnCancelText: 'STOP ALARM',
+            btnCancelColor: Colors.red,
+            btnCancelOnPress: () {
+              stopAllAlarms();
+              isDialogShowing = false;
+            },
+            headerAnimationLoop: true,
+            onDismissCallback: (type) {
+              isDialogShowing = false;
+            },
+          ).show();
+        } catch (e) {
+          print("⚠️ Error showing temperature dialog: $e");
+          isDialogShowing = false;
+        }
+      } else {
+        print("⚠️ Get.context is null, cannot show dialog.");
+      }
+    }
+  }
+}
 
    Color chartColGas = Colors.green;
    bool shouldSnoozeGas = true;
@@ -80,16 +95,17 @@ class HomePageCtr extends GetxController {
        chartColGas = Colors.green;
        isInDangerGas = false;
        shouldSnoozeGas = true; // Reset snooze when value returns to normal
+       isDialogShowing = false; // Reset dialog flag when back to normal
      } else {
        // Gas exceeds threshold
        chartColGas = Colors.red;
        isInDangerGas = true;
        
-       if(shouldSnoozeGas && isGasActive){
+       if(shouldSnoozeGas && isGasActive && !isDialogShowing){
          shouldSnoozeGas = false;
          
-         // Play sound at maximum volume
-         playAlarmAtMaxVolume();
+         // Play vibration only (no sound)
+         startVibration();
          
          // Send notification
          _notificationService.showNotification(
@@ -98,21 +114,30 @@ class HomePageCtr extends GetxController {
          );
          
          // Show dialog
-         AwesomeDialog(
-           context: Get.context!,
-           dialogType: DialogType.error,
-           animType: AnimType.scale,
-           dismissOnTouchOutside: false,
-           dismissOnBackKeyPress: false,
-           title: 'Gas Alert',
-           desc: 'Gas level is out of range: $gas_data',
-           btnCancelText: 'STOP ALARM',
-           btnCancelColor: Colors.red,
-           btnCancelOnPress: () {
-             stopAllAlarms();
-           },
-           headerAnimationLoop: true,
-         ).show();
+         isDialogShowing = true;
+         if (Get.context != null) {
+           AwesomeDialog(
+             context: Get.context!,
+             dialogType: DialogType.error,
+             animType: AnimType.scale,
+             dismissOnTouchOutside: false,
+             dismissOnBackKeyPress: false,
+             title: 'Gas Alert',
+             desc: 'Gas level is out of range: $gas_data',
+             btnCancelText: 'STOP ALARM',
+             btnCancelColor: Colors.red,
+             btnCancelOnPress: () {
+               stopAllAlarms();
+               isDialogShowing = false;
+             },
+             headerAnimationLoop: true,
+             onDismissCallback: (type) {
+               isDialogShowing = false;
+             },
+           ).show();
+         } else {
+           print("⚠️ Get.context is null, cannot show dialog.");
+         }
        }
      }
    }
@@ -125,16 +150,17 @@ class HomePageCtr extends GetxController {
        chartColNoise = Colors.green;
        isInDangerNoise = false;
        shouldSnoozeNoise = true; // Reset snooze when value returns to normal
+       isDialogShowing = false; // Reset dialog flag when back to normal
      } else {
        // Noise exceeds threshold
        chartColNoise = Colors.red;
        isInDangerNoise = true;
        
-       if(shouldSnoozeNoise && isNoiseActive){
+       if(shouldSnoozeNoise && isNoiseActive && !isDialogShowing){
          shouldSnoozeNoise = false;
          
-         // Play sound at maximum volume
-         playAlarmAtMaxVolume();
+         // Play vibration only (no sound)
+         startVibration();
          
          // Send notification
          _notificationService.showNotification(
@@ -143,21 +169,30 @@ class HomePageCtr extends GetxController {
          );
          
          // Show dialog
-         AwesomeDialog(
-           context: Get.context!,
-           dialogType: DialogType.error,
-           animType: AnimType.scale,
-           dismissOnTouchOutside: false,
-           dismissOnBackKeyPress: false,
-           title: 'Noise Alert',
-           desc: 'Noise level is out of range: $noise_data',
-           btnCancelText: 'STOP ALARM',
-           btnCancelColor: Colors.red,
-           btnCancelOnPress: () {
-             stopAllAlarms();
-           },
-           headerAnimationLoop: true,
-         ).show();
+         isDialogShowing = true;
+         if (Get.context != null) {
+           AwesomeDialog(
+             context: Get.context!,
+             dialogType: DialogType.error,
+             animType: AnimType.scale,
+             dismissOnTouchOutside: false,
+             dismissOnBackKeyPress: false,
+             title: 'Noise Alert',
+             desc: 'Noise level is out of range: $noise_data',
+             btnCancelText: 'STOP ALARM',
+             btnCancelColor: Colors.red,
+             btnCancelOnPress: () {
+               stopAllAlarms();
+               isDialogShowing = false;
+             },
+             headerAnimationLoop: true,
+             onDismissCallback: (type) {
+               isDialogShowing = false;
+             },
+           ).show();
+         } else {
+           print("⚠️ Get.context is null, cannot show dialog.");
+         }
        }
      }
    }
@@ -634,12 +669,14 @@ Future<int> getChildrenLength() async {
     tempDataPts.removeAt(0); // remove oldest data point
     tempDataPts.add(getNewDataPoint); // add new data point
   }
+
    updateSoundDataPoints(newData) {
     double getNewDataPoint= double.parse(newData); // your code to retrieve new data point here
     // update data points and rebuild chart
     noiseDataPts.removeAt(0); // remove oldest data point
     noiseDataPts.add(getNewDataPoint); // add new data point
   }
+
   /// //////////////////////
 
 

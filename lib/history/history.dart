@@ -364,3 +364,29 @@ class _HistoryViewState extends State<HistoryView> {
     );
   }
 }
+
+SideTitles bottomTimeTitles(int interval, List<String> timeList) {
+  return SideTitles(
+    showTitles: true,
+    interval: 1,
+    getTitlesWidget: (value, meta) {
+      int index = value.toInt();
+      if (index < 0 || index >= timeList.length) return Container();
+      // Show only every Nth label to avoid overlap
+      int showEvery = (timeList.length / 10).ceil();
+      if (index % showEvery != 0 && index != timeList.length - 1) return Container();
+      String timeStr = timeList[index];
+      // Format time string if needed (e.g., HH:mm:ss)
+      String label = timeStr.length > 8 ? timeStr.substring(11, 19) : timeStr;
+      return Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child: Text(
+          label,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 11, color: Colors.black),
+        ),
+      );
+    },
+  );
+}

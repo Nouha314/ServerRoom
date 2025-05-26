@@ -64,6 +64,7 @@ class HistoryCtr extends GetxController {
 
     loading = true;
     gas_history = await getHistoryData('Vasr/TheRoom/gas'); // path history
+    if (gas_history.length > 100) gas_history = gas_history.sublist(gas_history.length - 100);
     gas_values = gas_history.map((map) => map['value'].toDouble().toString() ).toList();
     gas_times = gas_history.map((map) => map['time'].toString() ).toList();
     print('## gas_history<${gas_history.length}>// gas_values<${gas_values}>// gas_times<${gas_times}>');
@@ -71,11 +72,13 @@ class HistoryCtr extends GetxController {
 
 
     temp_history = await getHistoryData('Vasr/TheRoom/temperature');
+    if (temp_history.length > 100) temp_history = temp_history.sublist(temp_history.length - 100);
     tem_values = temp_history.map((map) => map['value'].toString() ).toList();
     tem_times = temp_history.map((map) => map['time'].toString() ).toList();
     //
     //
     noise_history = await getHistoryData('Vasr/TheRoom/sound');
+    if (noise_history.length > 100) noise_history = noise_history.sublist(noise_history.length - 100);
     noise_values = noise_history.map((map) => map['value'].toString() ).toList();
     noise_times = noise_history.map((map) => map['time'].toString() ).toList();
 

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/login.dart';
 import '../my_voids.dart';
@@ -79,9 +80,9 @@ deleteUserFromAuth(email,pwd) async {
 
 }
 
- logoutUser()  {
-  //SharedPreferences preferences = await SharedPreferences.getInstance();
-  //await preferences.clear();
+ logoutUser() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('keepSignedIn', false);
   FirebaseAuth.instance.signOut().then((value) {
     Get.offAll(() => MyLogin());
   });
